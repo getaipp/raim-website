@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAIM Hero Video — Pick Your Favourite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0A0A0A;
+      color: #fff;
+      padding: 40px 24px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .header p {
+      color: #999;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Original hero — full width */
+    .original {
+      max-width: 1400px;
+      margin: 0 auto 48px;
+    }
+    .original .option {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .divider {
+      max-width: 1400px;
+      margin: 0 auto 48px;
+      text-align: center;
+      position: relative;
+    }
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #333;
+    }
+    .divider span {
+      position: relative;
+      background: #0A0A0A;
+      padding: 0 24px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #6E5845;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .option {
+      background: #1A1A1A;
+      border: 1px solid #333;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .option:hover { border-color: #6E5845; }
+    .option-video {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #111;
+      position: relative;
+      overflow: hidden;
+    }
+    .option-video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .option-info {
+      padding: 20px 24px;
+    }
+    .option-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6E5845;
+      margin-bottom: 6px;
+    }
+    .option-title {
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .option-desc {
+      font-size: 0.8125rem;
+      color: #999;
+      line-height: 1.6;
+    }
+    .note {
+      text-align: center;
+      margin-top: 48px;
+      padding: 24px;
+      background: #1A1A1A;
+      border-radius: 8px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .note p {
+      font-size: 0.8125rem;
+      color: #999;
+      line-height: 1.7;
+    }
+    .note strong { color: #6E5845; }
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>RAIM Hero Video Options</h1>
+    <p>Five recruitment-themed hero videos for the RAIM website. All generated with Seedance 2.0 at 1080p, 10 seconds, 16:9. Pick the one that fits the movement best.</p>
+  </div>
+
+  <!-- Original -->
+  <div class="original">
+    <div class="option">
+      <div class="option-video">
+        <video autoplay muted loop playsinline>
+          <source src="assets/review/hero-original.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="option-info">
+        <div class="option-label">Current Hero</div>
+        <div class="option-title">Office Dolly-In</div>
+        <p class="option-desc">Cinematic dolly into a modern office. Recruiter at a glass desk with holographic AI candidate profiles, warm golden light, city skyline. The one already on the site.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"><span>New Options</span></div>
+
+  <div class="grid">
+    <div class="option">
+      <div class="option-video">
+        <video autoplay muted loop playsinline>
+          <source src="assets/review/hero-a.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="option-info">
+        <div class="option-label">Option A</div>
+        <div class="option-title">Close-Up AI Matching</div>
+        <p class="option-desc">Tight close-up of a recruiter typing on a laptop. Holographic candidate profiles and AI matching scores float upward from the screen. Warm amber light, bokeh city lights behind.</p>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="option-video">
+        <video autoplay muted loop playsinline>
+          <source src="assets/review/hero-b.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="option-info">
+        <div class="option-label">Option B</div>
+        <div class="option-title">Agency Floor</div>
+        <p class="option-desc">Wide establishing shot of a premium open-plan recruitment agency. Multiple professionals at standing desks, glass meeting rooms, floating holographic talent pipeline dashboards between desks.</p>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="option-video">
+        <video autoplay muted loop playsinline>
+          <source src="assets/review/hero-c.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="option-info">
+        <div class="option-label">Option C</div>
+        <div class="option-title">AI Corridor Walk</div>
+        <p class="option-desc">A recruiter in a tailored suit walks through a sleek glass corridor, touching transparent digital screens on the walls that light up with candidate profiles and talent analytics. Tracking shot, city skyline through glass.</p>
+      </div>
+    </div>
+
+    <div class="option">
+      <div class="option-video">
+        <video autoplay muted loop playsinline>
+          <source src="assets/review/hero-d.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="option-info">
+        <div class="option-label">Option D</div>
+        <div class="option-title">Overhead Particle Desk</div>
+        <p class="option-desc">Birds-eye view descending onto a clean white desk. Hundreds of glowing golden particles converge from the edges into the laptop, forming candidate profiles and neural-network connection lines. Abstract yet grounded.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><strong>How to choose:</strong> Watch each video looping and imagine it behind the hero text overlay with the white gradient fade. The video needs to feel premium but not distract from the headline. Once you pick, I'll wire it into the live site.</p>
+  </div>
+</body>
+</html>
