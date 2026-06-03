@@ -360,7 +360,7 @@
           </div>
           <div class="form-group">
             <label for="website">Agency website</label>
-            <input type="url" id="website" name="website" required placeholder="www.youragency.com">
+            <input type="text" id="website" name="website" required inputmode="url" autocomplete="url" placeholder="www.youragency.com">
           </div>
         </div>
         <div class="form-row">
@@ -380,7 +380,9 @@
             </select>
           </div>
         </div>
+        <input type="text" name="homepage" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
         <button type="submit" class="btn btn-green btn-lg">Book a Call</button>
+        <p class="form-error" id="audit-error" style="display:none; color:#f4c8c3; margin-top:1rem;">Something went wrong. Please try again.</p>
       </form>
     </div>
   </section>
@@ -521,33 +523,68 @@
 
       // Form submission
       var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXeldCEsL2uNFm4U109hcBaLMQmlHa8cbCbH73Ch_DyavYvdvPGhsS9NcYOyBOH6T1/exec';
-      document.querySelector('.audit-form').addEventListener('submit', function(e) {
+      var isLocalSite = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+      var PORTAL_AGENCY_URL = (isLocalSite ? 'http://127.0.0.1:3000' : 'https://raim-portal.onrender.com') + '/api/public/intake/agency';
+      var auditForm = document.querySelector('.audit-form');
+      var auditError = document.getElementById('audit-error');
+      auditForm.addEventListener('submit', function(e) {
         e.preventDefault();
         var btn = this.querySelector('button[type="submit"]');
         var form = this;
+        if (auditError) auditError.style.display = 'none';
         btn.textContent = 'Sending...';
         btn.disabled = true;
+        btn.style.background = '';
+
+        var data = {
+          name: form.querySelector('#name').value.trim(),
+          email: form.querySelector('#email').value.trim(),
+          phone: form.querySelector('#phone').value.trim(),
+          agency: form.querySelector('#agency').value.trim(),
+          website: form.querySelector('#website').value.trim(),
+          size: form.querySelector('#size').value,
+          homepage: form.querySelector('[name="homepage"]').value.trim()
+        };
 
         var params = new URLSearchParams();
         params.append('type', 'agency');
-        params.append('name', form.querySelector('#name').value);
-        params.append('email', form.querySelector('#email').value);
-        params.append('phone', form.querySelector('#phone').value);
-        params.append('agency', form.querySelector('#agency').value);
-        params.append('website', form.querySelector('#website').value);
-        params.append('size', form.querySelector('#size').value);
+        params.append('name', data.name);
+        params.append('email', data.email);
+        params.append('phone', data.phone);
+        params.append('agency', data.agency);
+        params.append('website', data.website);
+        params.append('size', data.size);
 
-        fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' })
-          .then(function() {
-            btn.textContent = 'Request Sent';
-            btn.style.background = '#2E7D32';
-            form.reset();
-          })
-          .catch(function() {
-            btn.textContent = 'Request Sent';
-            btn.style.background = '#2E7D32';
-            form.reset();
-          });
+        // Transitional safety copy: keep the Google Sheet populated, but let
+        // Portal success decide the user-visible state.
+        if (!isLocalSite) {
+          fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' })
+            .catch(function() {});
+        }
+
+        fetch(PORTAL_AGENCY_URL, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        }).then(function(response) {
+          if (!response.ok) throw new Error('Portal intake failed');
+          btn.textContent = 'Request Sent';
+          btn.style.background = '#2E7D32';
+          form.reset();
+        }).catch(function() {
+          btn.textContent = 'Book a Call';
+          btn.disabled = false;
+          if (auditError) auditError.style.display = 'block';
+        });
+      });
+
+      auditForm.querySelectorAll('input, select').forEach(function(input) {
+        input.addEventListener('input', function() {
+          if (auditError) auditError.style.display = 'none';
+        });
       });
     })();
   </script>
