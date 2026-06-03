@@ -402,7 +402,9 @@
               <input type="text" name="company" placeholder="Company name">
             </div>
           </div>
+          <input type="text" name="homepage" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
           <button type="submit" class="btn btn-accent btn-lg register-btn">Get Free Access</button>
+          <p class="form-error" id="register-error" style="display:none; color:#8b1e1e; margin-top:1rem;">Something went wrong. Please try again.</p>
           <p class="form-note">Completely free. No payment required.</p>
         </form>
         <div class="register-success" id="register-success">
@@ -502,8 +504,11 @@
 
       // Registration form
       var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXeldCEsL2uNFm4U109hcBaLMQmlHa8cbCbH73Ch_DyavYvdvPGhsS9NcYOyBOH6T1/exec';
+      var isLocalSite = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+      var PORTAL_WAITLIST_URL = (isLocalSite ? 'http://127.0.0.1:3000' : 'https://raim-portal.onrender.com') + '/api/public/intake/waitlist';
       var regForm = document.getElementById('register-form');
       var regSuccess = document.getElementById('register-success');
+      var regError = document.getElementById('register-error');
 
       if (regForm) {
         regForm.addEventListener('submit', function(e) {
@@ -511,7 +516,10 @@
           var nameInput = regForm.querySelector('[name="name"]');
           var emailInput = regForm.querySelector('[name="email"]');
           var phoneInput = regForm.querySelector('[name="phone"]');
+          var companyInput = regForm.querySelector('[name="company"]');
+          var homepageInput = regForm.querySelector('[name="homepage"]');
           var valid = true;
+          if (regError) regError.style.display = 'none';
 
           [nameInput, emailInput, phoneInput].forEach(function(input) {
             if (!input.value.trim()) { input.classList.add('invalid'); valid = false; }
@@ -530,8 +538,8 @@
             name: nameInput.value.trim(),
             email: emailInput.value.trim(),
             phone: phoneInput.value.trim(),
-            company: regForm.querySelector('[name="company"]').value.trim(),
-            timestamp: new Date().toISOString()
+            company: companyInput.value.trim(),
+            homepage: homepageInput.value.trim()
           };
 
           function showSuccess() {
@@ -539,17 +547,38 @@
             regSuccess.classList.add('show');
           }
 
-          if (SCRIPT_URL) {
+          function showError() {
+            btn.textContent = 'Get Free Access';
+            btn.disabled = false;
+            if (regError) regError.style.display = 'block';
+          }
+
+          // Transitional safety copy: keep the Google Sheet populated, but do
+          // not use this no-cors request to decide the visible success state.
+          if (SCRIPT_URL && !isLocalSite) {
             var params = new URLSearchParams({name: data.name, email: data.email, phone: data.phone, company: data.company});
             fetch(SCRIPT_URL + '?' + params.toString(), { mode: 'no-cors' })
-              .then(showSuccess).catch(showSuccess);
-          } else {
-            setTimeout(showSuccess, 600);
+              .catch(function() {});
           }
+
+          fetch(PORTAL_WAITLIST_URL, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          }).then(function(response) {
+            if (!response.ok) throw new Error('Portal intake failed');
+            showSuccess();
+          }).catch(showError);
         });
 
         regForm.querySelectorAll('input').forEach(function(input) {
-          input.addEventListener('input', function() { input.classList.remove('invalid'); });
+          input.addEventListener('input', function() {
+            input.classList.remove('invalid');
+            if (regError) regError.style.display = 'none';
+          });
         });
       }
 
